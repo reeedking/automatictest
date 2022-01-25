@@ -1,10 +1,16 @@
 package com.reeedking.automatictest.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.reeedking.automatictest.ExtentReportParent;
+import com.aventstack.extentreports.ExtentReports;
+import com.aventstack.extentreports.MediaEntityBuilder;
+import com.aventstack.extentreports.Status;
+import com.aventstack.extentreports.markuputils.MarkupHelper;
+import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import com.reeedking.automatictest.exception.ResourceNotFoundException;
 import com.reeedking.automatictest.model.Person;
 import lombok.SneakyThrows;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,10 +34,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 //@SpringBootTest
 //@AutoConfigureMockMvc
 @WebMvcTest //使用该注解只会启动web层
-class TestControllerTest extends ExtentReportParent {
+class TestControllerTest2 {
 
+    private static ExtentReports extent;
     @Autowired
     private MockMvc mockMvc;
+
+    @BeforeAll
+    static void init() {
+        extent = new ExtentReports();
+        ExtentSparkReporter spark = new ExtentSparkReporter("target/index.html");
+        extent.attachReporter(spark);
+    }
 
     @SneakyThrows
     @Test
@@ -41,6 +55,9 @@ class TestControllerTest extends ExtentReportParent {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("getAll success")));
+        extent.createTest("测试获取所有，展示图片")
+                .addScreenCaptureFromPath("test.jpeg")
+                .pass(MediaEntityBuilder.createScreenCaptureFromPath("test.jpeg").build());
     }
 
     @SneakyThrows
@@ -57,6 +74,12 @@ class TestControllerTest extends ExtentReportParent {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("getOne success")));
+
+        extent.createTest("测试获取接口，展示对比框").generateLog(
+                Status.PASS,
+                MarkupHelper.createCodeBlock("内容展示框1", "内容展示框2"));
+
+
     }
 
     @SneakyThrows
@@ -73,6 +96,13 @@ class TestControllerTest extends ExtentReportParent {
 //                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("add success")));
+
+        extent.createTest("测试添加接口，不同的status展示")
+                .info("info")
+                .pass("pass")
+                .warning("warn")
+                .skip("skip")
+                .fail("fail");
     }
 
     @SneakyThrows
@@ -89,6 +119,12 @@ class TestControllerTest extends ExtentReportParent {
 //                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("update success")));
+
+
+        extent.createTest("测试更新所有，添加作者")
+                .assignAuthor("reeedking")
+                .pass("报告里面的包含了作者");
+
     }
 
     @Test
@@ -106,6 +142,10 @@ class TestControllerTest extends ExtentReportParent {
 //                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("delete success")));
+
+        extent.createTest("测试删除")
+                .assignDevice("添加设备信息")
+                .pass("测试删除接口，在报告中添加了设备信息");
     }
 
     @SneakyThrows
@@ -128,7 +168,7 @@ class TestControllerTest extends ExtentReportParent {
 //    @SneakyThrows
 //    @Test
 //    @DisplayName("测试抛出异常")
-//    void testError(){
+//    void testError() {
 //        UriComponents uriComponents =
 //                UriComponentsBuilder.fromUriString("/test/getOne")
 //                        .build();
@@ -139,6 +179,13 @@ class TestControllerTest extends ExtentReportParent {
 //                .andDo(print())
 //                .andExpect(status().isOk())
 //                .andExpect(content().string(containsString("getOne success")));
+//
+//        extent.createTest("测试抛出异常")
+//                .fail(new RuntimeException("我抛出了异常"));
 //    }
 
+    @AfterAll
+    static void afterAll() {
+        extent.flush();
+    }
 }

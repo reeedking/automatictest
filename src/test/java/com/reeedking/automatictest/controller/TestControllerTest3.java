@@ -1,7 +1,6 @@
 package com.reeedking.automatictest.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.reeedking.automatictest.ExtentReportParent;
 import com.reeedking.automatictest.exception.ResourceNotFoundException;
 import com.reeedking.automatictest.model.Person;
 import lombok.SneakyThrows;
@@ -28,14 +27,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 //@SpringBootTest
 //@AutoConfigureMockMvc
 @WebMvcTest //使用该注解只会启动web层
-class TestControllerTest extends ExtentReportParent {
+class TestControllerTest3 {
 
     @Autowired
     private MockMvc mockMvc;
 
     @SneakyThrows
     @Test
-    @DisplayName("测试获取所有")
+    @DisplayName("测试获取所有2")
     void testGetAll() {
         this.mockMvc.perform(get("/test"))
                 .andDo(print())
@@ -45,7 +44,7 @@ class TestControllerTest extends ExtentReportParent {
 
     @SneakyThrows
     @Test
-    @DisplayName("测试获取接口")
+    @DisplayName("测试获取接口2")
     void testGetOne() {
         UriComponents uriComponents =
                 UriComponentsBuilder.fromUriString("/test/getOne")
@@ -61,7 +60,7 @@ class TestControllerTest extends ExtentReportParent {
 
     @SneakyThrows
     @Test
-    @DisplayName("测试添加接口")
+    @DisplayName("测试添加接口2")
     void testAdd() {
         Person person = new Person("1", "reeedking", 27);
         UriComponents uriComponents =
@@ -77,7 +76,7 @@ class TestControllerTest extends ExtentReportParent {
 
     @SneakyThrows
     @Test
-    @DisplayName("测试更新所有")
+    @DisplayName("测试更新所有2")
     void testUpdate() {
         Person person = new Person("1", "reeedking", 27);
         UriComponents uriComponents =
@@ -93,7 +92,7 @@ class TestControllerTest extends ExtentReportParent {
 
     @Test
     @SneakyThrows
-    @DisplayName("测试删除")
+    @DisplayName("测试删除2")
     void testDelete() {
 
         UriComponents uriComponents =

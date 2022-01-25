@@ -16,14 +16,15 @@ public class TestController {
     }
 
     @SneakyThrows
-    @GetMapping("/{id}")
-    public Object getOne(@PathVariable String id) {
+    @GetMapping("/getOne")
+    public Object getOne(@RequestParam String id) {
         System.out.println("传入的id为：" + id);
         if (("123").equals(id)) {
             throw new ResourceNotFoundException("未找到id：123");
         }
         return "getOne success";
     }
+
 
     @PostMapping
     public Object add(@RequestBody Person person) {
